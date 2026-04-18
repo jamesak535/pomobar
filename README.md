@@ -17,6 +17,10 @@ A lightweight macOS menu bar Pomodoro timer. Built with Python and [rumps](https
 
 ## Install & Run
 
+### Manual Installation
+
+Download the "PomoBar.zip" file from the [latest release](https://github.com/jamesak535/pomobar/releases/latest) and move the unzipped app into your `Applications` folder.
+
 ### From source (recommended for development)
 
 ```bash
