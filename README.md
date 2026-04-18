@@ -6,7 +6,7 @@
 
 A lightweight macOS menu bar Pomodoro timer. Built with Python and [rumps](https://github.com/jaredks/rumps).
 
-<img src="images/Screenshot.png" alt="PomoBar screenshot">
+<img src="images/Screenshot.png" alt="PomoBar updated screenshot">
 
 </div>
 
