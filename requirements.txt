@@ -1,0 +1,29 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: osx-arm64
+# created-by: conda 25.3.1
+altgraph=0.17.5=pyhd8ed1ab_0
+bzip2=1.0.8=hd037594_9
+ca-certificates=2026.2.25=hbd8a1cb_0
+libexpat=2.7.5=hf6b4638_0
+libffi=3.5.2=hcf2aa1b_0
+liblzma=5.8.3=h8088a28_0
+libsqlite=3.53.0=h1b79a29_0
+libzlib=1.3.2=h8088a28_2
+macholib=1.16.4=pyhd8ed1ab_0
+modulegraph=0.19.7=pyhd8ed1ab_0
+ncurses=6.5=h5e97a16_3
+openssl=3.6.2=hd24854e_0
+packaging=26.1=pyhc364b38_0
+pip=26.0.1=pyh8b19718_0
+py2app=0.28.10=py312h2bbb03f_0
+pyobjc-core=12.1=py312h19bbe71_0
+pyobjc-framework-cocoa=12.1=py312h1de3e18_0
+python=3.12.13=h8561d8f_0_cpython
+python_abi=3.12=8_cp312
+readline=8.3=h46df422_0
+rumps=0.4.0=pyhd8ed1ab_1
+setuptools=82.0.1=pyh332efcf_0
+tk=8.6.13=h010d191_3
+tzdata=2025c=hc9c84f9_1
+wheel=0.46.3=pyhd8ed1ab_0

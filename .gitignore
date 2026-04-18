@@ -1,0 +1,25 @@
+# Build artifacts
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+*.dmg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+build_app.txt
