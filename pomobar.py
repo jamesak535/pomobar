@@ -179,8 +179,10 @@ class PomodoroApp(rumps.App):
             alarm_sound_menu.add(item)
         alarm_menu.add(alarm_sound_menu)
 
-        alarm_menu.add(rumps.MenuItem("Volume…", callback=self._set_alarm_volume))
-        alarm_menu.add(rumps.MenuItem("Repeat Count…", callback=self._set_alarm_repeat))
+        self.alarm_volume_item = rumps.MenuItem(f"Volume: {self.cfg['alarm_volume']}…", callback=self._set_alarm_volume)
+        alarm_menu.add(self.alarm_volume_item)
+        self.alarm_repeat_item = rumps.MenuItem(f"Repeat: {self.cfg['alarm_repeat']}…", callback=self._set_alarm_repeat)
+        alarm_menu.add(self.alarm_repeat_item)
         alarm_menu.add(rumps.MenuItem("Test Alarm", callback=self._test_alarm))
         self.settings_menu.add(alarm_menu)
 
@@ -200,7 +202,8 @@ class PomodoroApp(rumps.App):
             tick_sound_menu.add(item)
         tick_menu.add(tick_sound_menu)
 
-        tick_menu.add(rumps.MenuItem("Volume…", callback=self._set_ticking_volume))
+        self.tick_volume_item = rumps.MenuItem(f"Volume: {self.cfg['ticking_volume']}…", callback=self._set_ticking_volume)
+        tick_menu.add(self.tick_volume_item)
         self.settings_menu.add(tick_menu)
 
         # ── Session counter ────────────────────────────────────────────────
@@ -438,12 +441,14 @@ class PomodoroApp(rumps.App):
         if val is not None:
             self.cfg["alarm_volume"] = max(0, min(100, val))
             save_config(self.cfg)
+            self.alarm_volume_item.title = f"Volume: {self.cfg['alarm_volume']}…"
 
     def _set_alarm_repeat(self, _):
         val = self._prompt_int("Alarm Repeat", "Number of times to repeat:", self.cfg["alarm_repeat"])
         if val:
             self.cfg["alarm_repeat"] = val
             save_config(self.cfg)
+            self.alarm_repeat_item.title = f"Repeat: {self.cfg['alarm_repeat']}…"
 
     def _test_alarm(self, _):
         play_sound(self.cfg["alarm_sound"], self.cfg["alarm_volume"], self.cfg["alarm_repeat"])
@@ -473,6 +478,7 @@ class PomodoroApp(rumps.App):
         if val is not None:
             self.cfg["ticking_volume"] = max(0, min(100, val))
             save_config(self.cfg)
+            self.tick_volume_item.title = f"Volume: {self.cfg['ticking_volume']}…"
 
     def _play_tick_sound(self, _):
         if self.running and self.cfg["ticking_enabled"]:
