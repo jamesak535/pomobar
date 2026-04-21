@@ -7,6 +7,7 @@ import subprocess
 import threading
 import json
 import os
+import datetime
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 CONFIG_PATH = os.path.expanduser("~/.pomobar.json")
@@ -32,6 +33,8 @@ DEFAULT_CONFIG = {
     "ticking_sound": "Tink",
     "ticking_volume": 20,     # 0-100
     "show_mode_icon": True,
+    "focused_today_sec": 0,
+    "focused_date": "",
 }
 
 
@@ -98,6 +101,12 @@ class PomodoroApp(rumps.App):
         super().__init__("🍅", quit_button=None)
 
         self.cfg = load_config()
+
+        today = datetime.date.today().isoformat()
+        if self.cfg["focused_date"] != today:
+            self.cfg["focused_today_sec"] = 0
+            self.cfg["focused_date"] = today
+            save_config(self.cfg)
 
         # ── State ──────────────────────────────────────────────────────────
         self.mode = POMODORO
@@ -206,8 +215,9 @@ class PomodoroApp(rumps.App):
         tick_menu.add(self.tick_volume_item)
         self.settings_menu.add(tick_menu)
 
-        # ── Session counter ────────────────────────────────────────────────
+        # ── Session counter & focus time ───────────────────────────────────
         self.session_display = rumps.MenuItem(self._session_text(), callback=None)
+        self.focused_display = rumps.MenuItem(self._focused_text(), callback=None)
 
         # ── Quit ───────────────────────────────────────────────────────────
         quit_item = rumps.MenuItem("Quit", callback=rumps.quit_application)
@@ -221,6 +231,7 @@ class PomodoroApp(rumps.App):
             self.mode_menu,
             rumps.separator,
             self.session_display,
+            self.focused_display,
             rumps.separator,
             self.settings_menu,
             rumps.separator,
@@ -244,6 +255,14 @@ class PomodoroApp(rumps.App):
     def _session_text(self):
         return f"Sessions: {self.pomodoro_count}/{self.cfg['long_break_interval']}"
 
+    def _focused_text(self):
+        sec = self.cfg["focused_today_sec"]
+        h, rem = divmod(sec, 3600)
+        m = rem // 60
+        if h > 0:
+            return f"Focused today: {h}h {m}m"
+        return f"Focused today: {m}m"
+
     # ══════════════════════════════════════════════════════════════════════════
     #  Core Timer Logic
     # ══════════════════════════════════════════════════════════════════════════
@@ -251,6 +270,12 @@ class PomodoroApp(rumps.App):
     def _tick(self, _):
         if not self.running:
             return
+        today = datetime.date.today().isoformat()
+        if self.cfg["focused_date"] != today:
+            self.cfg["focused_today_sec"] = 0
+            self.cfg["focused_date"] = today
+            save_config(self.cfg)
+            self.focused_display.title = self._focused_text()
         self.remaining -= 1
         self._update_title()
         if self.remaining <= 0:
@@ -258,6 +283,13 @@ class PomodoroApp(rumps.App):
 
     def _on_timer_complete(self):
         self._stop_timer()
+
+        if self.mode == POMODORO:
+            elapsed = self.cfg["pomodoro_min"] * 60 - max(0, self.remaining)
+            self.cfg["focused_today_sec"] += max(0, elapsed)
+            self.cfg["focused_date"] = datetime.date.today().isoformat()
+            save_config(self.cfg)
+            self.focused_display.title = self._focused_text()
 
         if self.cfg["alarm_enabled"]:
             play_sound(
