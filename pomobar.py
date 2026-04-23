@@ -291,7 +291,6 @@ class PomodoroApp(rumps.App):
         if self.mode == POMODORO:
             elapsed = self.cfg["pomodoro_min"] * 60 - max(0, self.remaining)
             self.cfg["focused_today_sec"] += max(0, elapsed)
-            self.cfg["focused_date"] = datetime.date.today().isoformat()
             save_config(self.cfg)
             self.focused_display.title = self._focused_text()
 
@@ -384,7 +383,7 @@ class PomodoroApp(rumps.App):
     #  Settings Callbacks
     # ══════════════════════════════════════════════════════════════════════════
 
-    def _prompt_int(self, title, message, default):
+    def _prompt_int(self, title, message, default, min_value=1):
         script = (
             f'display dialog "{message}" '
             f'default answer "{default}" '
@@ -401,7 +400,7 @@ class PomodoroApp(rumps.App):
             if part.startswith("text returned:"):
                 try:
                     val = int(part.split(":", 1)[1].strip())
-                    if val > 0:
+                    if val >= min_value:
                         return val
                 except ValueError:
                     pass
@@ -473,7 +472,7 @@ class PomodoroApp(rumps.App):
         return cb
 
     def _set_alarm_volume(self, _):
-        val = self._prompt_int("Alarm Volume", "Volume (0–100):", self.cfg["alarm_volume"])
+        val = self._prompt_int("Alarm Volume", "Volume (0–100):", self.cfg["alarm_volume"], min_value=0)
         if val is not None:
             self.cfg["alarm_volume"] = max(0, min(100, val))
             save_config(self.cfg)
@@ -510,7 +509,7 @@ class PomodoroApp(rumps.App):
         return cb
 
     def _set_ticking_volume(self, _):
-        val = self._prompt_int("Ticking Volume", "Volume (0–100):", self.cfg["ticking_volume"])
+        val = self._prompt_int("Ticking Volume", "Volume (0–100):", self.cfg["ticking_volume"], min_value=0)
         if val is not None:
             self.cfg["ticking_volume"] = max(0, min(100, val))
             save_config(self.cfg)
