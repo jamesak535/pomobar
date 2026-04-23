@@ -117,6 +117,8 @@ class PomodoroApp(rumps.App):
         # ── Timers ─────────────────────────────────────────────────────────
         self.timer = rumps.Timer(self._tick, 1)
         self.tick_sound_timer = rumps.Timer(self._play_tick_sound, 1)
+        self.date_check_timer = rumps.Timer(self._check_date_reset, 60)
+        self.date_check_timer.start()
 
         # ── Build menu ─────────────────────────────────────────────────────
         self._build_menu()
@@ -267,15 +269,17 @@ class PomodoroApp(rumps.App):
     #  Core Timer Logic
     # ══════════════════════════════════════════════════════════════════════════
 
-    def _tick(self, _):
-        if not self.running:
-            return
+    def _check_date_reset(self, _):
         today = datetime.date.today().isoformat()
         if self.cfg["focused_date"] != today:
             self.cfg["focused_today_sec"] = 0
             self.cfg["focused_date"] = today
             save_config(self.cfg)
             self.focused_display.title = self._focused_text()
+
+    def _tick(self, _):
+        if not self.running:
+            return
         self.remaining -= 1
         self._update_title()
         if self.remaining <= 0:
