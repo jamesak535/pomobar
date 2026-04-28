@@ -20,6 +20,7 @@ A lightweight macOS menu bar Pomodoro timer. Built with Python and [rumps](https
 - **Alarm sounds** — enable/disable, choose from 14 macOS system sounds, adjust volume and repeat count
 - **Ticking sound** — enable/disable background ticking with sound and volume selection
 - **Session tracking** — displays completed pomodoros in the current cycle; resets with the Reset button
+- **Focused today** — tracks total focus time accumulated today; resets automatically at midnight
 - **macOS notifications** — alerts when sessions complete
 - **Persistent settings** — saved to `~/.pomobar.json`
 
